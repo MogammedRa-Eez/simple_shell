@@ -1,13 +1,31 @@
 #include <unistd.h>
 #include "simple_shell.h"
+#include <stdio.h>
+#include <stdlib.h>
 
+#define MAX_INPUT 100
 /**
- * temoraeez_prompt - function to prompt user input
+ * temoraeez_prompt- function for user input
  *
- * Return: User input
+ * Return: user input
  */
 
-void temoraeez_prompt(void)
+int temoraeez_prompt(void)
 {
-	write(STDOUT_FILENO, "funshell$ ", 10);
+	char *input = NULL;
+	size_t len = 0;
+	ssize_t read;
+
+	printf("$cisfun ");
+	fflush(stdout);
+
+	while ((read = getline(&input, &len, stdin)) != -1)
+	{
+		printf("%s", input);
+		printf("$cisfun ");
+		fflush(stdout);
+	}
+
+	free(input);
+	return (0);
 }

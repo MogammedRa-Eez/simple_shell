@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-void temoraeez_prompt(void);
+int temoraeez_prompt(void);
 char *temoraeez_read_input(void);
 char **temoraeez_parse_input(char *line);
 void temoraeez_execute(char **args);
