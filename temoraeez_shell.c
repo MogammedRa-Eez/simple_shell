@@ -2,10 +2,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/wait.h>
 #include "simple_shell.h"
 
-#define MAX COMMAND LENGTH "100"
 /**
  * main - Entry point for the simple shell
  *
@@ -27,28 +25,27 @@ int main(void)
 			printf("\n");
 			exit(EXIT_SUCCESS);
 		}
-
 		if (line[0] == '\0' || feof(stdin))
 		{
+			free(line);
 			continue;
 		}
-
 		args = temoraeez_parse_input(line);
 		if (args == NULL)
 		{
+			free(line);
 			continue;
 		}
-
 		if (strcmp(args[0], "exit") == 0)
 		{
+			free(line);
+			free(args);
 			exit(EXIT_SUCCESS);
 		}
-
 		temoraeez_execute(args);
 
 		free(line);
 		free(args);
 	}
-
 	return (0);
 }
