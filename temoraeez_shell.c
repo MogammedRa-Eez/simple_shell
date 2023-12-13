@@ -5,17 +5,12 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-
-
-/*
- * Function: main
- * --------------------------
- * This function is the entry point of the shell program.
- * It displays a prompt, reads the user's command
- * and executes the command.
+/**
+ * main - Entry point of the shell program
  *
- * returns: int - the exit status of the program
+ * Return: 0 on successful completion
  */
+
 int main(void)
 {
 	char *input;
