@@ -9,29 +9,30 @@
  *
  * Return: Nothing.
  */
+
 void temoraeez_execute(char **args)
 {
-    pid_t pid;
-    int status;
+	pid_t pid;
+	int status;
 
-    pid = fork();
-    if (pid == 0)
-    {
+	pid = fork();
+	if (pid == 0)
+	{
 
-        if (execvp(args[0], args) == -1)
-        {
-            perror("Command not found");
-            exit(EXIT_FAILURE);
-        }
-    }
-    else if (pid < 0)
-    {
-        perror("Fork error");
-    }
-    else
-    {
-        waitpid(pid, &status, WUNTRACED);
-    }
-    free(args);
+		if (execvp(args[0], args) == -1)
+		{
+			perror("Command not found");
+			exit(EXIT_FAILURE);
+		}
+	}
+	else if (pid < 0)
+	{
+		perror("Fork error");
+	}
+	else
+	{
+		waitpid(pid, &status, WUNTRACED);
+	}
+	free(args);
 }
 

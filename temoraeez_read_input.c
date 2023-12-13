@@ -7,7 +7,7 @@
 
 /**
  * temoraeez_read_input - Reads the user's command input from standard input.
- * @size: size_t - The size of the buffer
+ *
  *
  * Return: char * - The user's command input
  */
@@ -16,6 +16,7 @@ char *temoraeez_read_input(void)
 {
 	char *line = NULL;
 	size_t bufsize = 0;
+
 	getline(&line, &bufsize, stdin);
 	return (line);
 }
