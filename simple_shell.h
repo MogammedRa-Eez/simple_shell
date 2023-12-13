@@ -8,14 +8,11 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-
-
 void temoraeez_prompt(void);
+char *temoraeez_read_input(void);
+char **temoraeez_parse_input(char *line);
+void temoraeez_execute(char **args);
 
-char *temoraeez_read_input(size_t size);
 
-void temoraeez_execute(const char *command);
-
-void temoraeez_print(const char *temoraeezstring);
 
 #endif

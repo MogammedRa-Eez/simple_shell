@@ -1,41 +1,37 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/types.h>
 #include <sys/wait.h>
 #include "simple_shell.h"
 
 /**
- * temoraeez_execute - Executes a command within the shell.
- * @command: The command to be executed.
+ * temoraeez_execute - Executes the given command.
+ * @args: Array of strings containing the command and its arguments.
  *
- * Return: No return value.
- *
- * This function creates a child process using fork() and executes
- * the provided command using execlp(). The parent process waits
- * for the child process to complete.
+ * Return: Nothing.
  */
-void temoraeez_execute(const char *command)
+void temoraeez_execute(char **args)
 {
-	pid_t child_pid = fork();
+    pid_t pid;
+    int status;
 
-	if (child_pid == -1)
-	{
-		perror("fork");
-		exit(EXIT_FAILURE);
-	}
-	else if (child_pid == 0)
-	{
-		/* Child process */
-		if (execlp(command, command, (char *)NULL) == -1)
-		{
-			perror("execlp");
-			exit(EXIT_FAILURE);
-		}
-	}
-	else
-	{
-		/* Parent process */
-		wait(NULL);
-	}
+    pid = fork();
+    if (pid == 0)
+    {
+
+        if (execvp(args[0], args) == -1)
+        {
+            perror("Command not found");
+            exit(EXIT_FAILURE);
+        }
+    }
+    else if (pid < 0)
+    {
+        perror("Fork error");
+    }
+    else
+    {
+        waitpid(pid, &status, WUNTRACED);
+    }
+    free(args);
 }
+

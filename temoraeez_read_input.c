@@ -11,23 +11,11 @@
  *
  * Return: char * - The user's command input
  */
-char *temoraeez_read_input(size_t size)
+
+char *temoraeez_read_input(void)
 {
-	char *input = malloc(size);
-
-	if (input == NULL)
-	{
-		perror("temoraeez_read_input");
-		exit(EXIT_FAILURE);
-	}
-
-	if (fgets(input, size, stdin) == NULL)
-	{
-		perror("temoraeez_read_input");
-		free(input);
-		exit(EXIT_FAILURE);
-	}
-
-	input[strcspn(input, "\n")] = '\0';
-	return (input);
+	char *line = NULL;
+	size_t bufsize = 0;
+	getline(&line, &bufsize, stdin);
+	return (line);
 }
