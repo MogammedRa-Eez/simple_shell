@@ -20,8 +20,10 @@ int main(int ac, char **argv)
 		if (thread == NULL)
 		{
 			if (isatty(STDIN_FILENO))
+			{
 				write(STDOUT_FILENO, "\n", 1);
 				return (position);
+			}
 		}
 
 		free(thread);
@@ -31,4 +33,5 @@ int main(int ac, char **argv)
 
 		position = tr_execute(instruct, argv);
 	}
+	return (0);
 }

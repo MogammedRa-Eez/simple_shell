@@ -16,7 +16,9 @@ char *tr_strdup(const char *str)
 	int len = 0;
 
 	if (str == NULL)
+	{
 		return (NULL);
+	}
 		while (*str != '\0')
 		{
 			len++;
