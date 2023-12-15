@@ -1,35 +1,48 @@
 #include "shell.h"
 
 /**
- * main - Entry point for the simple shell.
- *
- *
- * Return: Always 0 (success).
+ * main - entry piont to the shell
+ * 
+ * @argv: arguments
+ * @ac: arguments
+ * @environment: envir
+ * 
+ * Return: 0 (success)
  */
 
-int main(void)
+int main(int ac, char **argv, char **environment)
 {
-	char *line;
-	char *argv[2];
+	char *line, **tokens;
+	int status = 0, indexNum = 0;
+	(void)ac;
 
-
-	tr_display_prompt();
-
-	while ((line = tr_readline()) != NULL)
+	while (1)
 	{
-		argv[0] = strtok(line, " ");
-		argv[1] = NULL;
-
-		if (strcmp(argv[0], "exit") == 0)
+		line = readline();
+		if (line == NULL)
 		{
-			break;
+			if (isatty(STDIN_FILENO))
+			{
+				write(STDOUT_FILENO, "$ ", 2);
+			}
+			return (status);
 		}
-		tr_execute(argv);
+		indexNum++;
 
-		tr_display_prompt();
+		tokens = tokenize(line);
+		if (!tokens)
+		{
+			continue;
+		}
+
+		if (checkBuiltIn(tokens[0]))
+		{
+			handleBuiltInCommand(tokens, argv, &status, indexNum, environment);
+		}
+		else
+		{
+			status = performExecution(tokens, argv, environment, indexNum);
+		}
 	}
-
-	free(line);
-
-	return (0);
 }
+
