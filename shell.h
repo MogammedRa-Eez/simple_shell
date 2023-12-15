@@ -1,60 +1,49 @@
 #ifndef SHELL_H
 #define SHELL_H
 
-#include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <sys/types.h>
-#include <sys/wait.h>
 #include <sys/stat.h>
-#include <fcntl.h>
+#include <sys/wait.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
 #include <errno.h>
+#include <signal.h>
 
-#define WHITESPACE " \t\n"
+extern char **environ;
 
-/* =================== utils =========================*/
-void freeArray(char **arr);
-void displayError(char *name, char *cmd, int indexNum);
-void displayErrorExit(char *name, char *cmd, int indexNum);
-char *_intToAscii();
-void reverseString(char *string, int length);
-int isPositiveNumber(char *str);
-int _atoi(char *str);
+typedef struct variables
+{
+    char *buffer;
+    char **array_tokens;
+    char *program;
+    int exit_s;
+} vars_t;
 
-/* ================== utils2 ==========================*/
-int isPositive(char *str);
-int _atoi(char *str);
-char *_getEnvironment(char *variable, char **environment);
-char **tokenize(char *line);
-char *readline(void);
+typedef struct builtins
+{
+    char *name;
+    int (*f)(vars_t *, int num_line, char **env);
+} builtins_t;
 
-/* ==================== strings =======================*/
-int _strlen(char *string);
-char *_strcat(char *dest, char *src);
-char *_strcpy(char *dest, char *src);
-char *_strdup(const char *str);
-int _strcmp(char *s1, char *s2);
 
-/* ==================== execute ===================*/
-int performExecution(char **cmd, char **argv, char **environment, int indexNum);
-
-/* ===================== handlers =================*/
-char *_handlePath(char *cmd, char **environment);
-void manageExit(char **command, char **argv, int *status, int index);
-void handleBuiltInCommand(
-	char **command, char **argv, int *status, int index, char **enviornment);
-void manageEnvironment(char **command, int *status, char **enviornment);
-void printErrorOfExit(char *name, char *cmd, int indexNum);
-
-/* ==================== myStrtok ===================*/
-char *myStrtok(char *str, const char *delim);
-
-/* ==================== myGetline ===================*/
-ssize_t myGetline(char **linePtr, size_t *n, FILE *stream);
-
-/* ==================== isBuiltIn =================*/
-int checkBuiltIn(char *command);
+char **tokenize_string(char *buffer, char *delimiter);
+char *reallocate_memory(char *ptr, unsigned int size_ini, unsigned int size_fin);
+int execute_command(vars_t *vars, int num, char **env);
+char *get_command_path(char *cmd, char **env);
+char *validate_command_path(char **tokens, char *cmd);
+char *concatenate_strings(char *dest, char *src);
+char *duplicate_string(char *str);
+int compare_strings(char *s1, char *s2);
+int find_builtin_command(vars_t *vars, int num, char **env);
+int execute_builtin_env(vars_t *vars, int num_line, char **env);
+int execute_builtin_exit(vars_t *vars, int num_line, char **env);
+int calculate_string_length(char *s);
+int calculate_integer_length(int n);
+char *convert_integer_to_string(int num);
+int parse_string_to_int(char *s);
 
 #endif
 

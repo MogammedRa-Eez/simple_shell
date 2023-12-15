@@ -1,48 +1,81 @@
 #include "shell.h"
 
 /**
- * main - entry piont to the shell
+ * handle_ctrlc - simple shell
  * 
- * @argv: arguments
- * @ac: arguments
- * @environment: envir
- * 
- * Return: 0 (success)
+ * @var: void
  */
 
-int main(int ac, char **argv, char **environment)
+void handle_ctrlc(int var)
 {
-	char *line, **tokens;
-	int status = 0, indexNum = 0;
-	(void)ac;
+	(void)var;
+	write(STDOUT_FILENO, "\n$ ", 3);
+}
 
-	while (1)
+
+/**
+ * handle_ctrld - simple shell
+ * 
+ * @vars: argument count
+ * @len: argument vectors
+ */
+
+void handle_ctrld(vars_t *vars, int len)
+{
+	if (len == -1)
 	{
-		line = readline();
-		if (line == NULL)
-		{
-			if (isatty(STDIN_FILENO))
-			{
-				write(STDOUT_FILENO, "$ ", 2);
-			}
-			return (status);
-		}
-		indexNum++;
+		free(vars->buffer);
+		exit(errno);
+	}
+}
 
-		tokens = tokenize(line);
-		if (!tokens)
-		{
-			continue;
-		}
+/**
+ * main - entry point to simple shell
+ * 
+ * @ac: argument count
+ * @av: argument vectors
+ * @env: enviroment
+ * 
+ * Return: 0 on success
+ */
 
-		if (checkBuiltIn(tokens[0]))
+int main(int ac, char **av, char **env)
+{
+	int len, countline = 0, copy_errno;
+	vars_t vars = {NULL, NULL, NULL, 0};
+	size_t buff_size = 0;
+	char delim[] = " \n\r\t";
+
+	(void) ac;
+
+	vars.program = av[0];
+	if (isatty(STDIN_FILENO))
+		write(STDOUT_FILENO, "$ ", 2);
+	errno = 0;
+	signal(SIGINT, handle_ctrlc);
+	while ((len = getline(&(vars.buffer), &buff_size, stdin)) != EOF)
+	{
+		countline++;
+		vars.array_tokens = tokenize_string(vars.buffer, delim);
+		if (vars.array_tokens[0] != NULL)
 		{
-			handleBuiltInCommand(tokens, argv, &status, indexNum, environment);
+			if (!find_builtin_command(&vars, countline, env))
+				execute_command(&vars, countline, env);
 		}
 		else
-		{
-			status = performExecution(tokens, argv, environment, indexNum);
-		}
+			free(vars.array_tokens);
+		copy_errno = errno;
+		if (isatty(STDIN_FILENO))
+			write(STDOUT_FILENO, "$ ", 2);
+		errno = copy_errno;
 	}
+	copy_errno = errno;
+	if (isatty(STDIN_FILENO))
+		write(STDOUT_FILENO, "\n", 1);
+	errno = copy_errno;
+	handle_ctrld(&vars, len);
+
+	return (errno);
+
 }
 
